@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StoreMovieRequest;
 
 class MovieController extends Controller
 {
@@ -37,9 +38,21 @@ class MovieController extends Controller
         return view('input', compact('categories'));
     }
 
-    public function store(Request $request)
+    public function store(StoreMovieRequest $request)
     {
         // Validasi data
+        $validated = $request->validated();
+        if ($request->hasFile('foto_sampul')) {
+            $validated['foto_sampul'] =
+                $request->file('foto_sampul')
+                ->store('movie_covers','public');
+        }
+
+        Movie::create($validated);
+
+        return redirect('/')
+            ->with('success','Film berhasil ditambahkan');
+
         $validator = Validator::make($request->all(), [
             'id' => ['required', 'string', 'max:255', Rule::unique('movies', 'id')],
             'judul' => 'required|string|max:255',
