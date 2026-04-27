@@ -1,37 +1,23 @@
 @extends('layout.template')
 
-@section('title', 'Homepage')
+@section('title', 'Popular Movie')
 
 @section('content')
 
-@if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>    
-@endif
+<h1 class="mb-4">Popular Movie</h1>
 
-<h1>Popular Movie</h1>
 <div class="row">
-    @foreach ($movies as $movie)
-    <div class="col-lg-6">
-        <div class="card mb-3" style="max-width: 540px;">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img src="/images/{{ $movie['foto_sampul'] }}" class="img-fluid rounded-start" alt="...">
-            </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $movie['judul'] }}</h5>
-                        <p class="card-text">{{ $movie['sinopsis'] }}</p>
-                        <a href="/movie/{{ $movie['id'] }}" class="btn btn-success">Lihat Selanjutnya</a>
-                    </div>
-                </div>
-            </div>
+    @forelse ($movies as $movie)
+        @include('partials.movie-card', compact('movie'))
+    @empty
+        <div class="col-12">
+            <p class="text-muted">Tidak ada film ditemukan.</p>
         </div>
-    </div>
-    @endforeach
-    <div class="d-flex justify-content-center">
-        {{ $movies->links() }}
-    </div>
+    @endforelse
 </div>
+
+<div class="d-flex justify-content-center mt-3">
+    {{ $movies->links() }}
+</div>
+
 @endsection
